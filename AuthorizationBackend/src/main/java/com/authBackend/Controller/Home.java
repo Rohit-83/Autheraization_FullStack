@@ -62,10 +62,9 @@ public class Home {
 		response = new ResponseEntity<String>(jwt,HttpStatus.OK);
 		
 		
-		
 		}catch (Exception e) {
 			e.printStackTrace();
-			response = new ResponseEntity<String>("Not authorized user",HttpStatus.FORBIDDEN);
+			response = new ResponseEntity<String> ("Unauthorized user wrong username password",HttpStatus.FORBIDDEN);
 		}
 		//if the try block run successfully then now we have to jwt token
 		// for creating jwt token we need user details

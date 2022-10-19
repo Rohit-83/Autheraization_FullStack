@@ -14,8 +14,10 @@ import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.DefaultSecurityFilterChain;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import com.authBackend.Services.CustomerDetailsService;
+import com.authBackend.filter.JwtAuthenticationFilter;
 
 
 @SuppressWarnings("deprecation")
@@ -25,6 +27,9 @@ public class SecurityConfiguration  {
 	
 	@Autowired
 	private CustomerDetailsService customerUserDetailService;
+	
+	@Autowired
+	private JwtAuthenticationFilter jwtAuthenticationFilter;
 
 
     //this method contain the trick of stating  user name and password . 
@@ -58,11 +63,13 @@ public class SecurityConfiguration  {
 			.csrf() 
 			.disable()
 			.authorizeRequests()
-			.antMatchers("/auth/token","/auth/healthCheck").permitAll()
+			.antMatchers("/auth/token").permitAll()
 			.anyRequest().authenticated()
 			.and()
 			
 			.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+		
+		http.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 		
 		http.authenticationProvider(daoAuthenticationProvider());
 		DefaultSecurityFilterChain defaultSecurityFilterChain = http.build();
